@@ -60,9 +60,10 @@ In fields like physics simulations, finance, or any application needing high-pre
 
 ## Leibniz formula for π
 
-In mathematics, the Leibniz formula for π, named after Gottfried Wilhelm Leibniz, states that:
+In mathematics, the Leibniz formula for π[^2], named after Gottfried Wilhelm Leibniz, states that:
 <img src="./docs/img/leibniz-formula-for-pi.png" alt="Leibniz formula for pi">
 
 ## Resources
 
 [^1]: Wikipedia, [Kahan Summation Algorithm](https://en.wikipedia.org/wiki/Kahan_summation_algorithm)
+[^2]: Wikipedia, [Leibniz formula for π](https://en.wikipedia.org/wiki/Leibniz_formula_for_%CF%80)
