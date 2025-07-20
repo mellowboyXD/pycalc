@@ -10,7 +10,7 @@ Building a calculator app is [not as simple](https://chadnauseam.com/coding/rand
 
 ### Architecture Diagram
 
-<img src="./img/architecture_diagram.png"/>
+<img src="./img/architecture_diagram.png" alt="AD" width=500px/>
 
 ## Kahan Summation Algorithm
 
