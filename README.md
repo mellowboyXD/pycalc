@@ -61,8 +61,7 @@ In fields like physics simulations, finance, or any application needing high-pre
 ## Leibniz formula for π
 
 In mathematics, the Leibniz formula for π, named after Gottfried Wilhelm Leibniz, states that:
-
-{\displaystyle {\frac {\pi }{4}}=1-{\frac {1}{3}}+{\frac {1}{5}}-{\frac {1}{7}}+{\frac {1}{9}}-\cdots =\sum _{k=0}^{\infty }{\frac {(-1)^{k}}{2k+1}},}
+<img src="./docs/img/leibniz-formula-for-pi.png" alt="Leibniz formula for pi">
 
 ## Resources
 
