@@ -5,7 +5,12 @@ Building a calculator app is [not as simple](https://chadnauseam.com/coding/rand
 
 > *"Only those who have never built a calculator app will claim it's easy"*
 >   ~ magichronx 
+
 [Link](https://www.reddit.com/r/theprimeagen/comments/1iqwqfh/comment/md52bng/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+
+### Architecture Diagram
+
+<img src="./img/architecture_diagram.png" width="150px"/>
 
 ## Kahan Summation Algorithm
 
@@ -61,9 +66,13 @@ In fields like physics simulations, finance, or any application needing high-pre
 ## Leibniz formula for π
 
 In mathematics, the Leibniz formula for π[^2], named after Gottfried Wilhelm Leibniz, states that:
-<img src="./docs/img/leibniz-formula-for-pi.png" alt="Leibniz formula for pi">
+<img src="./img/leibniz-formula-for-pi.png" alt="Leibniz formula for pi"/>
 
-## Resources
+## Architectural Diagram
+
+An architectural diagram[^3] is a visual representation that maps out the physical implementation for components of a software system. It shows the general structure of the software system and the associations, limitations, and boundaries between each element. 
+
 
 [^1]: Wikipedia, [Kahan Summation Algorithm](https://en.wikipedia.org/wiki/Kahan_summation_algorithm)
 [^2]: Wikipedia, [Leibniz formula for π](https://en.wikipedia.org/wiki/Leibniz_formula_for_%CF%80)
+[^3]: Lucidchart, [How to draw 5 types of architectural diagrams](https://www.lucidchart.com/blog/how-to-draw-architectural-diagrams)
