@@ -20,7 +20,7 @@ POINTER = "hand2"
 FONT = (FONT_FAMILY, FONT_SIZE, "bold")
 
 
-class BUTTONS(Enum):
+class Buttons(Enum):
     hist = "\uf1da"
     open_brac = "("
     close_brac = ")"
@@ -43,21 +43,21 @@ class BUTTONS(Enum):
     zero = "0"
 
 
-special = [BUTTONS.hist, BUTTONS.open_brac, BUTTONS.close_brac]
-operators = [BUTTONS.div, BUTTONS.mul, BUTTONS.sub, BUTTONS.add, BUTTONS.equal]
+special = [Buttons.hist, Buttons.open_brac, Buttons.close_brac]
+operators = [Buttons.div, Buttons.mul, Buttons.sub, Buttons.add, Buttons.equal]
 
 # fmt: off
 NUM_PAD = [
-    BUTTONS.hist, BUTTONS.open_brac, BUTTONS.close_brac, BUTTONS.div,
-    BUTTONS.seven, BUTTONS.eight, BUTTONS.nine, BUTTONS.mul,
-    BUTTONS.four, BUTTONS.five, BUTTONS.six, BUTTONS.sub,
-    BUTTONS.one, BUTTONS.two, BUTTONS.three, BUTTONS.add,
-    BUTTONS.dot, BUTTONS.zero, BUTTONS.clear, BUTTONS.equal,
+    Buttons.hist, Buttons.open_brac, Buttons.close_brac, Buttons.div,
+    Buttons.seven, Buttons.eight, Buttons.nine, Buttons.mul,
+    Buttons.four, Buttons.five, Buttons.six, Buttons.sub,
+    Buttons.one, Buttons.two, Buttons.three, Buttons.add,
+    Buttons.dot, Buttons.zero, Buttons.clear, Buttons.equal,
 ]
 # fmt: on
 
 
-class Window:
+class MainWindow:
     def __init__(self, master):
         master.title("PyCalc")
         master.geometry(f"{WIN_WIDTH}x{WIN_HEIGHT}")
@@ -90,9 +90,10 @@ class Window:
             validate="key",
             validatecommand=(vcmd, "%P"),
         )
-
         self.input_fld.grid(row=0, column=0)
         self.input_fld.pack(ipady=INPUT_PADY, padx=INPUT_PADX)
+
+        self.input_fld.bind("<KeyPress>", self.on_key_press)
 
         # Buttons
         # fmt: off
@@ -106,6 +107,41 @@ class Window:
         self.btn_frm.pack()
         self.render_buttons(self.btn_frm)
 
+    def on_key_press(self, event):
+        match event.char:
+            case "/":
+                self.input_fld.insert(tk.INSERT, Buttons.div.value)
+                return "break"
+            case "*":
+                self.input_fld.insert(tk.INSERT, Buttons.mul.value)
+                return "break"
+            case "c":
+                self.clear()
+                return "break"
+            case "h":
+                self.get_history()
+                return "break"
+            case Buttons.equal.value:
+                self.evaluate()
+                return "break"
+            case "\b":
+                pos = self.input_fld.index(tk.INSERT)
+                self.input_fld.delete(pos - 1)
+                return "break"
+            case "":
+                pos = self.input_fld.index(tk.INSERT)
+                if event.keysym == "Left":
+                    new_pos = max(0, pos - 1)
+                elif event.keysym == "Right":
+                    new_pos = max(0, pos + 1)
+                else:
+                    new_pos = pos
+                self.input_fld.icursor(new_pos)
+                return "break"
+            case _:
+                self.insert_input(event.char, kb=True)
+                return "break"
+
     def validate(self, P: str):
         """
         Checks if only allowed NUM_PAD characters have been entered.
@@ -114,12 +150,11 @@ class Window:
         if len(P) > MAX_INPUT_CHARS:
             return False
         for l in P:
-            if l == BUTTONS.clear or l not in NUM_PAD or l == BUTTONS.hist:
+            if l not in [x.value for x in NUM_PAD] and l != "\b":
                 return False
         return True
 
     def render_buttons(self, master):
-        self.buttons = []
         for i, b in enumerate(NUM_PAD):
             r, c = divmod(i, 4)
             if b in special:
@@ -132,7 +167,7 @@ class Window:
                 fg_color = COLOR_SECONDARY
                 bg_color = COLOR_PRIMARY
 
-            btn = tk.Button(
+            tk.Button(
                 master,
                 width=BTN_WIDTH,
                 height=BTN_HEIGHT,
@@ -144,22 +179,43 @@ class Window:
                 bg=bg_color,
                 command=lambda x=b: self.insert_input(x),
             ).grid(row=r, column=c, padx=1, pady=1)
-            self.buttons.append(btn)
 
-    def insert_input(self, char: BUTTONS):
+    def insert_input(self, char: Buttons | str, kb=False):
         match char:
-            case BUTTONS.clear:
-                self.input_txt.set(BUTTONS.zero.value)
-            case BUTTONS.equal:
+            case Buttons.clear:
+                self.clear()
+            case Buttons.equal:
                 self.evaluate()
-            case BUTTONS.hist:
+            case Buttons.hist:
                 self.get_history()
             case _:
-                if len(self.input_txt.get()) <= MAX_INPUT_CHARS:
-                    if self.input_txt.get() == BUTTONS.zero.value:
-                        self.input_txt.set(char.value)
+                if isinstance(char, Buttons):
+                    c = char.value
+                else:
+                    c = char
+                if self.validate(c):
+                    if self.input_txt.get() == Buttons.zero.value and c not in [
+                        x.value for x in operators
+                    ]:
+                        self.input_txt.set(c)
                     else:
-                        self.input_txt.set(self.input_txt.get() + char.value)
+                        if kb:
+                            self.input_fld.insert(tk.INSERT, c)
+                        else:
+                            self.input_txt.set(self.input_txt.get() + c)
+
+            # if len(self.input_txt.get()) <= MAX_INPUT_CHARS and c in [
+            #     x.value for x in NUM_PAD
+            # ]:
+            #     if self.input_txt.get() == Buttons.zero.value and c not in [
+            #         x.value for x in operators
+            #     ]:
+            #         self.input_txt.set(c)
+            #     else:
+            #         self.input_txt.set(self.input_txt.get() + c)
+
+    def clear(self):
+        self.input_txt.set(Buttons.zero.value)
 
     def evaluate(self):
         print("TODO: Evaluete", self.input_txt.get())
@@ -170,5 +226,5 @@ class Window:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    Window(root)
+    MainWindow(root)
     root.mainloop()
