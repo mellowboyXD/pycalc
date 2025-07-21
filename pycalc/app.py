@@ -58,14 +58,16 @@ NUM_PAD = [
 
 
 class MainWindow:
-    def __init__(self, master):
-        master.title("PyCalc")
-        master.geometry(f"{WIN_WIDTH}x{WIN_HEIGHT}")
-        master.resizable(False, False)
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("PyCalc")
+        self.root.geometry(f"{WIN_WIDTH}x{WIN_HEIGHT}")
+        # self.root.resizable(False, False)
+        self.hist = None
 
         # Input
         self.input_frm = tk.Frame(
-            master,
+            self.root,
             width=WIN_WIDTH,
             height=INPUT_HEIGHT,
             highlightbackground=COLOR_SECONDARY,
@@ -78,7 +80,7 @@ class MainWindow:
 
         self.input_txt = tk.StringVar(value="0")
 
-        vcmd = root.register(self.validate)
+        vcmd = self.root.register(self.validate)
         self.input_fld = tk.Entry(
             self.input_frm,
             font=(FONT_FAMILY, FONT_SIZE + 10, "normal"),
@@ -98,7 +100,7 @@ class MainWindow:
         # Buttons
         # fmt: off
         self.btn_frm = tk.Frame(
-            root, 
+            self.root, 
             width=BTN_FRM_WIDTH, 
             height=BTN_FRM_HEIGHT, 
             bg=COLOR_PRIMARY,
@@ -150,7 +152,7 @@ class MainWindow:
         if len(P) > MAX_INPUT_CHARS:
             return False
         for l in P:
-            if l not in [x.value for x in NUM_PAD] and l != "\b":
+            if l not in [x.value for x in NUM_PAD]:
                 return False
         return True
 
@@ -204,27 +206,44 @@ class MainWindow:
                         else:
                             self.input_txt.set(self.input_txt.get() + c)
 
-            # if len(self.input_txt.get()) <= MAX_INPUT_CHARS and c in [
-            #     x.value for x in NUM_PAD
-            # ]:
-            #     if self.input_txt.get() == Buttons.zero.value and c not in [
-            #         x.value for x in operators
-            #     ]:
-            #         self.input_txt.set(c)
-            #     else:
-            #         self.input_txt.set(self.input_txt.get() + c)
-
     def clear(self):
         self.input_txt.set(Buttons.zero.value)
 
     def evaluate(self):
-        print("TODO: Evaluete", self.input_txt.get())
+        print("TODO: Evaluate", self.input_txt.get())
 
     def get_history(self):
         print("TODO: Get history")
+        if self.hist and self.hist.winfo_exists():
+            self.hist.destroy()
+        else:
+            self.hist = SidePanel(self.root)
+            self.root.wait_window(self.hist)
+
+    def run(self):
+        self.root.mainloop()
+
+
+class SidePanel(tk.Frame):
+    def __init__(self, master):
+        super().__init__(master, bg=COLOR_ACCENT)
+        self.grab_set()
+        self.place(relx=0.0, rely=0.0, anchor="nw", relheight=1.0, relwidth=0.7)
+
+        close_btn = tk.Button(
+            self,
+            width=3,
+            font=(FONT_FAMILY, 10),
+            text="Close",
+            cursor=POINTER,
+            command=self.close,
+        )
+        close_btn.pack(pady=10)
+
+    def close(self):
+        self.destroy()
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    MainWindow(root)
-    root.mainloop()
+    app = MainWindow()
+    app.run()
