@@ -1,4 +1,3 @@
-from ast import Div
 import tkinter as tk
 from enum import Enum
 
@@ -62,7 +61,7 @@ class MainWindow:
         self.root = tk.Tk()
         self.root.title("PyCalc")
         self.root.geometry(f"{WIN_WIDTH}x{WIN_HEIGHT}")
-        # self.root.resizable(False, False)
+        self.root.resizable(False, False)
         self.hist = None
 
         # Input
