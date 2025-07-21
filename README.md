@@ -1,6 +1,9 @@
 # Yet Another Calculator
 
 A GUI calculator app built in python using the Tkinter library.
+
+<img src="./img/UI.png" alt="UI Layout"/>
+
 Building a calculator app is [not as simple](https://chadnauseam.com/coding/random/calculator-app) as it sounds.
 
 > *"Only those who have never built a calculator app will claim it's easy"*
