@@ -20,7 +20,7 @@ FONT = (FONT_FAMILY, FONT_SIZE, "bold")
 
 
 class Buttons(Enum):
-    hist = "\uf1da"
+    hist = "\u27f2"  # "\uf1da"
     open_brac = "("
     close_brac = ")"
     clear = "AC"
@@ -54,6 +54,82 @@ NUM_PAD = [
     Buttons.dot, Buttons.zero, Buttons.clear, Buttons.equal,
 ]
 # fmt: on
+
+
+class InvalidExpressionToken(Exception):
+    pass
+
+
+class Expression:
+    operators = {
+        Buttons.open_brac.value: 0,
+        Buttons.close_brac.value: 0,
+        Buttons.mul.value: 1,
+        "*": 1,
+        Buttons.div.value: 1,
+        "/": 1,
+        Buttons.add.value: 2,
+        Buttons.sub.value: 2,
+    }
+
+    def __init__(self, exp: str):
+        self.infix = self.__create_exp_list(exp)
+        self.postfix = self.rpn()
+
+    def __create_exp_list(self, infix: str) -> list[str]:
+        lst = []
+        temp = ""
+
+        for c in infix:
+            if c in self.operators.keys():
+                if temp:
+                    lst.append(temp)
+                lst.append(c)
+                temp = ""
+            else:
+                if str.isdigit(c) or c == Buttons.dot.value:
+                    temp += c
+                else:
+                    raise InvalidExpressionToken(f"Invalid character: '{c}'")
+        if temp:
+            lst.append(temp)
+        return lst
+
+    def rpn(self, infix: list[str] | None = None) -> list[str]:
+        stack = []
+        if not infix:
+            infix = self.infix
+        postfix = []
+        for c in infix:
+            if c in self.operators.keys():
+                if len(stack) < 1:
+                    stack.append(c)
+                elif c == Buttons.close_brac.value:
+                    op = stack.pop()
+                    while op != Buttons.open_brac.value and len(stack) > 0:
+                        postfix.append(op)
+                        op = stack.pop()
+                    if op != Buttons.open_brac.value:
+                        postfix = ["Syntax Error"]
+                        break
+                elif (
+                    self.operators[c] < self.operators[stack[-1]]
+                    or stack[-1] == Buttons.open_brac.value
+                ):
+                    stack.append(c)
+                else:
+                    postfix.append(stack.pop())
+                    stack.append(c)
+            else:
+                postfix.append(c)
+
+        for _ in range(len(stack)):
+            postfix.append(stack.pop())
+
+        return postfix
+
+    def __str__(self) -> str:
+        return "".join(self.infix)
 
 
 class MainWindow:
