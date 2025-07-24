@@ -128,6 +128,13 @@ class Expression:
 
         return postfix
 
+    # TODO: Im too lazy rn to do this, I'll proceed to just right some tests
+    # for rpn()
+    def evaluate(self, exp_lst: list[str] | None = None) -> str:
+        if not exp_lst:
+            exp_lst = self.postfix
+        return "Hello World"
+
     def __str__(self) -> str:
         return "".join(self.infix)
 
