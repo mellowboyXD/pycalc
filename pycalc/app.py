@@ -59,6 +59,8 @@ NUM_PAD = [
 class InvalidExpressionToken(Exception):
     pass
 
+class MissingMatchingBracket(Exception):
+    pass
 
 class Expression:
     operators = {
@@ -79,10 +81,13 @@ class Expression:
     def __create_exp_list(self, infix: str) -> list[str]:
         lst = []
         temp = ""
+        found_num = False
 
         for c in infix:
             if c in self.operators.keys():
                 if temp:
+                    if str.isdigit(temp):
+                        found_num = True
                     lst.append(temp)
                 lst.append(c)
                 temp = ""
@@ -93,6 +98,9 @@ class Expression:
                     raise InvalidExpressionToken(f"Invalid character: '{c}'")
         if temp:
             lst.append(temp)
+
+        if not found_num:
+            raise InvalidExpressionToken("Syntax Error")
         return lst
 
     def rpn(self, infix: list[str] | None = None) -> list[str]:
@@ -110,8 +118,7 @@ class Expression:
                         postfix.append(op)
                         op = stack.pop()
                     if op != Buttons.open_brac.value:
-                        postfix = ["Syntax Error"]
-                        break
+                        raise MissingMatchingBracket("Syntax Error")
                 elif (
                     self.operators[c] < self.operators[stack[-1]]
                     or stack[-1] == Buttons.open_brac.value

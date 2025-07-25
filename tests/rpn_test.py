@@ -1,5 +1,5 @@
 import unittest
-from pycalc.app import Expression
+from pycalc.app import Expression, InvalidExpressionToken, MissingMatchingBracket
 
 
 class RPNTest(unittest.TestCase):
@@ -33,6 +33,42 @@ class RPNTest(unittest.TestCase):
         actual = Expression(exp).postfix
         self.assertListEqual(expected, actual, "Simple test")
 
+    def test_empty(self):
+        exp = ""
+        self.assertRaises(InvalidExpressionToken, Expression, exp)
+
+    def test_incomplete(self):
+        exp = "2-"  # handle these in evaluate()
+        expected = ["2", "-"]
+        actual = Expression(exp).postfix
+        self.assertListEqual(expected, actual, "Test Incomplete input")
+
+    def test_negative_at_beginning(self):
+        exp = "-2+4"
+        expected = ["2", "-", "4", "+"]
+        actual = Expression(exp).postfix
+        self.assertListEqual(expected, actual, "Test negative at beginning")
+
+    def test_mul_at_beginning(self):
+        exp = "*3-2"
+        expected = ["3", "*", "2", "-"]
+        actual = Expression(exp).postfix
+        self.assertListEqual(expected, actual, "Multiplication at beginning")
+
+    def test_alphabet(self):
+        exp = "s+i" 
+        self.assertRaises(InvalidExpressionToken, 
+                          Expression, exp)
+
+    def test_only_operators(self):
+        exp = "-+/*"
+        self.assertRaises(InvalidExpressionToken, 
+                          Expression, exp) 
+
+    def test_no_open_brac(self):
+        exp = "4-5)/2"
+        self.assertRaises(MissingMatchingBracket,
+                          Expression, exp)
 
 def suite():
     suite = unittest.TestSuite()
