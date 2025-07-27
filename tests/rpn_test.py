@@ -45,9 +45,16 @@ class RPNTest(unittest.TestCase):
 
     def test_negative_at_beginning(self):
         exp = "-2+4"
-        expected = ["2", "-", "4", "+"]
+        expected = ["-2", "4", "+"]
         actual = Expression(exp).postfix
+        print(Expression(exp).infix)
         self.assertListEqual(expected, actual, "Test negative at beginning")
+
+    def test_negative(self):
+        exp = "4+-2"
+        expected = ["4", "-2", "+"]
+        actual = Expression(exp).postfix
+        self.assertListEqual(expected, actual, "Test negative")
 
     def test_mul_at_beginning(self):
         exp = "*3-2"

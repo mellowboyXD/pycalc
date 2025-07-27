@@ -20,7 +20,7 @@ FONT = (FONT_FAMILY, FONT_SIZE, "bold")
 
 
 class Buttons(Enum):
-    hist = "\u27f2"  # "\uf1da"
+    hist = "\uf1da"
     open_brac = "("
     close_brac = ")"
     clear = "AC"
@@ -54,165 +54,6 @@ NUM_PAD = [
     Buttons.dot, Buttons.zero, Buttons.clear, Buttons.equal,
 ]
 # fmt: on
-
-
-class InvalidExpressionToken(Exception):
-    pass
-
-class MissingMatchingBracket(Exception):
-    pass
-
-class Expression:
-    operators = {
-        Buttons.open_brac.value: 0,
-        Buttons.close_brac.value: 0,
-        Buttons.mul.value: 1,
-        "*": 1,
-        Buttons.div.value: 1,
-        "/": 1,
-        Buttons.add.value: 2,
-        Buttons.sub.value: 2,
-    }
-
-    def __init__(self, exp: str):
-        self.infix = self.__create_exp_list(exp)
-        self.postfix = self.rpn()
-
-    def __create_exp_list(self, infix: str) -> list[str]:
-        lst = []
-        temp = ""
-        found_num = False
-        i = 0
-        while i < len(infix):
-            c = infix[i]
-            if c == Buttons.sub.value or c == Buttons.add.value:
-                prev = i - 1
-                nexti = i + 1
-                op = [x for x in self.operators.keys() if x != Buttons.open_brac.value and x != Buttons.close_brac.value]
-                if i == 0 and nexti < len(infix):
-                    if infix[nexti] not in op:
-                        lst.append(c + infix[nexti])
-                        i += 2
-                        found_num = True
-                        continue
-                elif prev >= 0 and infix[prev] in self.operators.keys():
-                    if nexti < len(infix) and infix[nexti] not in self.operators.keys():
-                        lst.append(c + infix[nexti])
-                        i += 2
-                        found_num = True
-                        continue
-
-            if c in self.operators.keys():
-                if temp:
-                    if str.isdigit(temp):
-                        found_num = True
-                    lst.append(temp)
-                lst.append(c)
-                temp = ""
-            else:
-                if str.isdigit(c) or c == Buttons.dot.value:
-                    temp += c
-                else:
-                    raise InvalidExpressionToken(f"Invalid character: '{c}'")
-            i += 1
-        if temp:
-            lst.append(temp)
-
-        if not found_num:
-            raise InvalidExpressionToken("Syntax Error")
-        return lst
-
-    def rpn(self, infix: list[str] | None = None) -> list[str]:
-        stack = []
-        if not infix:
-            infix = self.infix
-        postfix = []
-        for c in infix:
-            if c in self.operators.keys():
-                if len(stack) < 1:
-                    stack.append(c)
-                elif c == Buttons.close_brac.value:
-                    op = stack.pop()
-                    while op != Buttons.open_brac.value and len(stack) > 0:
-                        postfix.append(op)
-                        op = stack.pop()
-                    if op != Buttons.open_brac.value:
-                        raise MissingMatchingBracket("Syntax Error")
-                elif (
-                    self.operators[c] < self.operators[stack[-1]]
-                    or stack[-1] == Buttons.open_brac.value
-                ):
-                    stack.append(c)
-                else:
-                    postfix.append(stack.pop())
-                    stack.append(c)
-            else:
-                postfix.append(c)
-
-        for _ in range(len(stack)):
-            postfix.append(stack.pop())
-
-        return postfix
-
-    # TODO: Im too lazy rn to do this, I'll proceed to just right some tests
-    # for rpn()
-    def evaluate(self, exp_lst: list[str] | None = None) -> str:
-        if not exp_lst:
-            exp_lst = self.postfix
-        if len(exp_lst) < 3:
-            raise InvalidExpressionToken("Syntax Error")
-        stack = []
-        op = self.operators.keys()
-        for e in exp_lst:
-            if e in op:
-                if len(stack) < 2:
-                    raise InvalidExpressionToken("Syntax Error")
-                n2 = stack.pop()
-                n1 = stack.pop()
-                match e:
-                    case Buttons.add.value: 
-                        try:
-                            result = float(n1) + float(n2)
-                            stack.append(str(result))
-                        except Exception:
-                            raise InvalidExpressionToken("Syntax Error")
-                    case Buttons.sub.value: 
-                        try:
-                            result = float(n1) - float(n2)
-                            stack.append(str(result))
-                        except Exception:
-                            raise InvalidExpressionToken("Syntax Error")
-                    case "*": 
-                        try:
-                            result = float(n1) * float(n2)
-                            stack.append(str(result))
-                        except Exception:
-                            raise InvalidExpressionToken("Syntax Error")
-                    case Buttons.mul.value: 
-                        try:
-                            result = float(n1) * float(n2)
-                            stack.append(str(result))
-                        except Exception:
-                            raise InvalidExpressionToken("Syntax Error")
-                    case "/": 
-                        try:
-                            result = float(n1) / float(n2)
-                            stack.append(str(result))
-                        except Exception:
-                            raise InvalidExpressionToken("Syntax Error")
-                    case Buttons.div.value: 
-                        try:
-                            result = float(n1) / float(n2)
-                            stack.append(str(result))
-                        except Exception:
-                            raise InvalidExpressionToken("Syntax Error")
-            else:
-                stack.append(e)
-
-        return "".join(stack)
-
-    def __str__(self) -> str:
-        return "".join(self.infix)
 
 
 class MainWindow:
@@ -386,7 +227,8 @@ class SidePanel(tk.Frame):
     def __init__(self, master):
         super().__init__(master, bg=COLOR_ACCENT)
         self.grab_set()
-        self.place(relx=0.0, rely=0.0, anchor="nw", relheight=1.0, relwidth=0.7)
+        self.place(relx=0.0, rely=0.0, anchor="nw",
+                   relheight=1.0, relwidth=0.7)
 
         close_btn = tk.Button(
             self,

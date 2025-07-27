@@ -1,5 +1,5 @@
 import unittest
-from pycalc.app import Expression
+from pycalc.app import Expression, InvalidExpressionToken
 
 def evaluate(exp: str) -> str:
     e = Expression(exp)
@@ -8,27 +8,28 @@ def evaluate(exp: str) -> str:
 class EvaluateTest(unittest.TestCase):
     def test_simple(self):
         exp = "12+24"
-        expected = "36"
+        expected = "36.0"
         actual = evaluate(exp)
         self.assertEqual(expected, actual, "Simple test")
 
     def test_empty(self):
-        exp = ""
-        expected = ""
-        actual = evaluate(exp)
-        self.assertEqual(expected, actual, "Test Empty")
+        self.assertRaises(InvalidExpressionToken, lambda: Expression("").evaluate())
 
     def test_brackets(self):
         exp = "(2+5)*2"
-        expected = "20"
+        expected = "14.0"
         actual = evaluate(exp)
         self.assertEqual(expected, actual, "Test Brackets")
 
     def test_incomplete(self):
         exp = "2-"
-        expected = "Syntax Error"
+        self.assertRaises(InvalidExpressionToken, lambda: Expression(exp).evaluate())
+
+    def test_negative(self):
+        exp = "-2+1"
+        expected = "-1.0"
         actual = evaluate(exp)
-        self.assertEqual(expected, actual, "Test Brackets")
+        self.assertEqual(expected, actual, "Test Negative")
 
 
 def suite():
