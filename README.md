@@ -2,7 +2,7 @@
 
 Simple GUI Calculator app built using Tkinter library.
 
-<img src="./img/UI.png" width=50%>
+<img src="./img/UI.png" width=30%>
 
 ## Functions
 
