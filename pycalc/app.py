@@ -20,7 +20,7 @@ FONT = (FONT_FAMILY, FONT_SIZE, "bold")
 
 
 class Buttons(Enum):
-    hist = "\u27f2"  # "\uf1da"
+    hist = "\u23f3"  # "\uf1da"
     open_brac = "("
     close_brac = ")"
     clear = "AC"
