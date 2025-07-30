@@ -13,3 +13,7 @@ Simple GUI Calculator app built using Tkinter library.
 - Clear
 - Equate
 - History (TODO)
+
+## Footnotes
+
+Checkout my [notes](notes.md) to delve deeper.

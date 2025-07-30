@@ -1,5 +1,10 @@
 # Yet Another Calculator
 
+## Initial Thought process
+
+This project was more of a research rather than a full implementation. Initially I wanted to just build a GUI application in python, and so the calculator app seemed easy enough for a beginner to the GUI world.
+However if you dive into the commit history for this repo (it's a mess), you'll notice that I was initially going for a naive RPN approach to evaluate the different input expressions. I had set `test/` directories with infix/postfix expression tests. Unfortunately the code was so bad that I decided so scrap it and just used `eval` instead. 
+
 Building a calculator app is [not as simple](https://chadnauseam.com/coding/random/calculator-app) as it sounds.
 
 > *"Only those who have never built a calculator app will claim it's easy"*
